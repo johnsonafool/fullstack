@@ -44,6 +44,8 @@ const App = () => {
       <p>good {good}</p>
       <p>neutral {neutral}</p>
       <p>bad {bad}</p>
+      <p>average {good * 1 + neutral * 0 - bad * 1}</p>
+      <p>postive {good / (good + neutral + bad)} %</p>
       {/* <Display value={value} />
       <Button handleClick={() => setToValue(1000)} text="thousand" />
       <Button handleClick={() => setToValue(0)} text="reset" />
