@@ -23,7 +23,9 @@ const History = (props) => {
   if (props.allClicks.length === 0) {
     return (
       <div>
-        <h1>statistics</h1>
+        <h1>
+          <strong>statistics</strong>
+        </h1>
         <h3>No feedback given</h3>
       </div>
     );
