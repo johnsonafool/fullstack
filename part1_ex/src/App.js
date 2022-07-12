@@ -19,11 +19,26 @@ const Statistics = (props) => (
   </div>
 );
 
+const History = (props) => {
+  if (props.allClicks.length === 0) {
+    return (
+      <div>
+        <h1>statistics</h1>
+        <h3>No feedback given</h3>
+      </div>
+    );
+  }
+  return (
+    <Statistics good={props.good} bad={props.bad} neutral={props.neutral} />
+  );
+};
+
 const App = () => {
   // const [value, setValue] = useState(10);
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
+  const [allClicks, setAll] = useState([]);
 
   // const setToValue = (newValue) => {
   //   console.log("value now", newValue);
@@ -31,14 +46,17 @@ const App = () => {
   // };
 
   const handleGoodClick = () => {
+    setAll(allClicks.concat("G"));
     setGood(good + 1);
   };
 
   const handleNeutralClick = () => {
+    setAll(allClicks.concat("N"));
     setNeutral(neutral + 1);
   };
 
   const handleBadClick = () => {
+    setAll(allClicks.concat("B"));
     setBad(bad + 1);
   };
 
@@ -50,7 +68,8 @@ const App = () => {
       <button onClick={handleGoodClick}>good</button>
       <button onClick={handleNeutralClick}>neutral</button>
       <button onClick={handleBadClick}>bad</button>
-      <Statistics good={good} bad={bad} neutral={neutral} />
+      <History allClicks={allClicks} />
+      {/* <Statistics good={good} bad={bad} neutral={neutral} /> */}
     </div>
   );
 };
