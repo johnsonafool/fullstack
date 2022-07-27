@@ -22,47 +22,68 @@ const App = () => {
       setNotes(response.data);
     });
 
-  useEffect(hook, []);
-  console.log("render", notes.length, "notes");
-  const addNote = (event) => {
-    event.preventDefault();
-    const noteObject = {
-      content: newNote,
-      date: new Date().toISOString(),
-      important: Math.random() < 0.5,
-      id: notes.length + 1,
+    useEffect(hook, []);
+    console.log("render", notes.length, "notes");
+    const addNote = (event) => {
+      event.preventDefault();
+      const noteObject = {
+        content: newNote,
+        date: new Date().toISOString(),
+        important: Math.random() < 0.5,
+        id: notes.length + 1,
+      };
+      axios.post("http://localhost:3001/notes", noteObject).then((response) => {
+        console.log(response);
+        setNotes(notes.concat(noteObject));
+        setNewNote("");
+      });
     };
 
-    setNotes(notes.concat(noteObject));
-    setNewNote("");
-  };
+    const handleNoteChange = (event) => {
+      console.log(event.target.value);
+      setNewNote(event.target.value);
+    };
 
-  const handleNoteChange = (event) => {
-    console.log(event.target.value);
-    setNewNote(event.target.value);
-  };
+    const toggleImportanceOf = (id) => {
+      // console.log("importance of " + id + " needs to be toggled"); // Java-like manner
 
-  const notesToShow = showAll ? notes : notes.filter((note) => note.important);
+      console.log(`importance of ${id} needs to be toggled`); // ES6
+      const note = notes.find((n) => n.id === id);
+      const changedNote = { ...note, important: !note.important };
 
-  return (
-    <div>
-      <h1>Notes</h1>
+      axios.put(url, changedNote).then((response) => {
+        setNotes(notes.map((note) => (note.id !== id ? note : response.data)));
+      });
+    };
+
+    const notesToShow = showAll
+      ? notes
+      : notes.filter((note) => note.important);
+
+    return (
       <div>
-        <button onClick={() => setShowAll(!showAll)}>
-          show {showAll ? "important" : "all"}
-        </button>
+        <h1>Notes</h1>
+        <div>
+          <button onClick={() => setShowAll(!showAll)}>
+            show {showAll ? "important" : "all"}
+          </button>
+        </div>
+        <ul>
+          {notesToShow.map((note) => (
+            <Note
+              key={note.id}
+              note={note}
+              toggleImportance={() => toggleImportanceOf(note.id)}
+            />
+          ))}
+        </ul>
+        <form onSubmit={addNote}>
+          <input value={newNote} onChange={handleNoteChange} />
+          <button type="submit">save</button>
+        </form>
       </div>
-      <ul>
-        {notesToShow.map((note) => (
-          <Note key={note.id} note={note} />
-        ))}
-      </ul>
-      <form onSubmit={addNote}>
-        <input value={newNote} onChange={handleNoteChange} />
-        <button type="submit">save</button>
-      </form>
-    </div>
-  );
+    );
+  };
 };
 
 export default App;
